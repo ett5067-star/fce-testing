@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FCE B2 First - Practice Hub</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons para la parte de Speaking -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    /* Estilos para el Gap-fill (Tabs 2 y 3) */
+    .gap-input {
+      border: none;
+      border-bottom: 2px solid #9ca3af; 
+      background-color: transparent;
+      border-radius: 0;
+    }
+    .gap-input:focus { border-bottom-color: #3b82f6; outline: none; }
+    .correct-input { border-bottom-color: #22c55e; color: #166534; font-weight: bold; background-color: #dcfce7; }
+    .incorrect-input { border-bottom-color: #ef4444; color: #991b1b; font-weight: bold; background-color: #fee2e2; }
+    
+    .correct-select { background-color: #dcfce7; border-color: #22c55e; color: #166534; font-weight: bold; }
+    .incorrect-select { background-color: #fee2e2; border-color: #ef4444; color: #991b1b; font-weight: bold; }
+  </style>
+</head>
+<body class="bg-gray-100 p-4 font-sans max-w-6xl mx-auto flex flex-col min-h-screen">
+  
+  <!-- Encabezado General -->
+  <header class="bg-indigo-700 text-white shadow-md rounded-lg mb-6">
+    <div class="px-6 py-4 flex flex-wrap justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <i class="ph ph-certificate text-3xl text-amber-300"></i>
+        <div>
+          <h1 class="text-xl font-bold tracking-wide">FCE B2 First - Practice Hub</h1>
+          <p class="text-xs text-indigo-200">Official Cambridge B2 Preparation</p>
+        </div>
+      </div>
+      <span class="bg-indigo-800 text-indigo-100 text-xs px-3 py-1 rounded-full border border-indigo-500 font-medium mt-2 sm:mt-0">
+        Standalone Edition
+      </span>
+    </div>
+  </header>
+
+  <!-- Pestañas de Navegación Globales -->
+  <div class="flex border-b border-gray-300 mb-6 flex-wrap shadow-sm rounded-t-lg bg-white overflow-hidden">
+    <button id="btn-mocks" onclick="switchGlobalTab('mocks')" class="flex-1 py-3 px-2 font-bold bg-white text-indigo-700 border-t-2 border-indigo-700 transition-colors text-sm sm:text-base">
+      1. Mocks (Choice)
+    </button>
+    <button id="btn-listening" onclick="switchGlobalTab('listening')" class="flex-1 py-3 px-2 font-bold bg-gray-100 text-gray-600 border-b-2 border-transparent transition-colors text-sm sm:text-base hover:bg-gray-200">
+      2. Listening (Gap-fill)
+    </button>
+    <button id="btn-lyrics" onclick="switchGlobalTab('lyrics')" class="flex-1 py-3 px-2 font-bold bg-gray-100 text-gray-600 border-b-2 border-transparent transition-colors text-sm sm:text-base hover:bg-gray-200">
+      3. Validación (Canciones)
+    </button>
+    <button id="btn-speaking" onclick="switchGlobalTab('speaking')" class="flex-1 py-3 px-2 font-bold bg-gray-100 text-gray-600 border-b-2 border-transparent transition-colors text-sm sm:text-base hover:bg-gray-200">
+      4. Speaking Simulator
+    </button>
+  </div>
+
+  <!-- SECCIÓN SUPERIOR: REPRODUCTOR EXÁMENES (Visible solo en Tabs 1 y 2) -->
+  <div id="exam-player-section">
+    <div class="mb-4 flex justify-center items-center gap-4 bg-white p-4 rounded-lg shadow-sm">
+      <label class="font-semibold text-gray-700">Selecciona el Examen FCE:</label>
+      <select id="examSelect" onchange="loadExam()" class="p-2 border rounded font-bold text-indigo-700 bg-indigo-50 focus:outline-none"></select>
+    </div>
+    <div class="bg-white p-4 rounded-lg shadow-md mb-6">
+      <div class="flex justify-center mb-4"><div id="playerExams"></div></div>
+      <div class="flex justify-center gap-4">
+        <button onclick="seekExam(-10)" class="bg-gray-200 hover:bg-gray-300 px-6 py-2 rounded font-bold shadow-sm text-gray-700">⏪ -10s</button>
+        <button onclick="playPauseExam()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded font-bold shadow-sm">⏯ Play / Pausa</button>
+        <button onclick="seekExam(10)" class="bg-gray-200 hover:bg-gray-300 px-6 py-2 rounded font-bold shadow-sm text-gray-700">+10s ⏩</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN SUPERIOR: REPRODUCTOR CANCIONES (Visible solo en Tab 3) -->
+  <div id="lyrics-player-section" class="hidden">
+    <div class="mb-4 flex justify-center items-center gap-4 bg-white p-4 rounded-lg shadow-sm">
+      <label class="font-semibold text-gray-700">Selecciona la Canción:</label>
+      <select id="songSelect" onchange="loadSong()" class="p-2 border rounded font-bold text-purple-700 bg-purple-50 focus:outline-none">
+        <option value="song1">Season 2 Weight Loss - Harry Styles</option>
+        <option value="song2">It's Not Right But It's Okay - Glee Cast</option>
+        <option value="song3">How To Be A Heartbreaker - Marina</option>
+      </select>
+    </div>
+    <div class="bg-white p-4 rounded-lg shadow-md mb-6">
+      <div class="flex justify-center mb-4"><div id="playerSongs"></div></div>
+      <div class="flex justify-center gap-4">
+        <button onclick="seekSong(-10)" class="bg-gray-200 hover:bg-gray-300 px-6 py-2 rounded font-bold shadow-sm text-gray-700">⏪ -10s</button>
+        <button onclick="playPauseSong()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded font-bold shadow-sm">⏯ Play / Pausa</button>
+        <button onclick="seekSong(10)" class="bg-gray-200 hover:bg-gray-300 px-6 py-2 rounded font-bold shadow-sm text-gray-700">+10s ⏩</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- CONTENEDORES DE LAS PESTAÑAS               -->
+  <!-- ========================================== -->
+
+  <!-- TAB 1: Mocks -->
+  <div id="tab-mocks" class="bg-white p-6 rounded-lg shadow-md flex-grow">
+    <h2 class="text-xl font-bold mb-4 text-gray-800">Mocks (Multiple Choice)</h2>
+    <div id="mocks-container"></div>
+    <div class="mt-6 flex items-center justify-between">
+      <button onclick="gradeMocks()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-6 rounded shadow">Evaluar Mocks</button>
+      <p id="mocks-score" class="font-bold text-xl text-indigo-800"></p>
+    </div>
+  </div>
+
+  <!-- TAB 2: Listening -->
+  <div id="tab-listening" class="bg-white p-6 rounded-lg shadow-md flex-grow hidden">
+    <h2 class="text-xl font-bold mb-2 text-gray-800">Listening Parte 2 (Fill in the blanks)</h2>
+    <p class="mb-6 text-sm text-gray-500">Completa los espacios en blanco. El sistema perdona mayúsculas y espacios extra.</p>
+    <div id="listening-container" class="space-y-4"></div>
+    <div class="mt-6 flex items-center justify-between">
+      <button onclick="gradeListening()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-6 rounded shadow">Evaluar Listening</button>
+      <p id="listening-score" class="font-bold text-xl text-indigo-800"></p>
+    </div>
+  </div>
+
+  <!-- TAB 3: Validación (Canciones) -->
+  <div id="tab-lyrics" class="bg-white p-6 rounded-lg shadow-md flex-grow hidden">
+    <h2 class="text-xl font-bold mb-2 text-gray-800">Validación de Listening (Lyric Detective)</h2>
+    <p class="mb-6 text-sm text-gray-500">Escucha con atención y completa las palabras que faltan en la letra.</p>
+    <div id="lyrics-container" class="text-lg leading-loose space-y-4 text-gray-700 font-medium"></div>
+    <div class="mt-8 flex items-center justify-between border-t border-gray-200 pt-4">
+      <button onclick="gradeLyrics()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded shadow">Evaluar Letra</button>
+      <p id="lyrics-score" class="font-bold text-xl text-purple-800"></p>
+    </div>
+  </div>
+
+  <!-- TAB 4: SPEAKING SIMULATOR -->
+  <div id="tab-speaking" class="flex-grow hidden flex flex-col">
+    <!-- Instrucciones -->
+    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg shadow-sm flex items-start space-x-3 mb-6">
+      <i class="ph ph-info text-2xl text-amber-600 mt-0.5 flex-shrink-0"></i>
+      <div class="text-sm text-amber-900">
+        <strong class="font-semibold">How to practice:</strong>
+        <ol class="list-decimal list-inside mt-1 space-y-1 text-amber-800">
+          <li>Select an Exam Part below and click "Connect Microphone".</li>
+          <li>Click "Start Response" and speak clearly in English for 30–60 seconds.</li>
+          <li>Click "Evaluate Answer" for Cambridge B2 feedback.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <!-- Pestañas internas del Speaking -->
+      <div class="flex border-b border-slate-200 bg-slate-100/70 overflow-x-auto" id="spkTabContainer">
+        <button type="button" id="spk-tab-1" class="spk-tab-btn active px-6 py-3 font-semibold text-sm flex items-center space-x-2 border-b-2 border-indigo-600 text-indigo-600 bg-white transition">
+          <i class="ph ph-user-wave text-lg"></i><span>Part 1: Interview</span>
+        </button>
+        <button type="button" id="spk-tab-2" class="spk-tab-btn px-6 py-3 font-semibold text-sm text-slate-600 hover:text-indigo-600 flex items-center space-x-2 transition border-b-2 border-transparent">
+          <i class="ph ph-images text-lg"></i><span>Part 2: Long Turn</span>
+        </button>
+        <button type="button" id="spk-tab-3" class="spk-tab-btn px-6 py-3 font-semibold text-sm text-slate-600 hover:text-indigo-600 flex items-center space-x-2 transition border-b-2 border-transparent">
+          <i class="ph ph-users-three text-lg"></i><span>Part 3: Collab Task</span>
+        </button>
+        <button type="button" id="spk-tab-4" class="spk-tab-btn px-6 py-3 font-semibold text-sm text-slate-600 hover:text-indigo-600 flex items-center space-x-2 transition border-b-2 border-transparent">
+          <i class="ph ph-chats-teardrop text-lg"></i><span>Part 4: Discussion</span>
+        </button>
+      </div>
+
+      <div class="p-6">
+        <!-- Header del Prompt -->
+        <div class="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
+          <div>
+            <h2 id="parteTitulo" class="text-xl font-bold text-slate-800">Part 1: Interview</h2>
+            <p id="parteDescripcion" class="text-xs text-slate-500 mt-0.5">Direct questions about your personal life, hobbies, work, or studies (~2 minutes).</p>
+          </div>
+          <button type="button" id="btnNuevoPrompt" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium text-xs px-4 py-2 rounded-lg transition flex items-center space-x-1.5 border border-indigo-200">
+            <i class="ph ph-arrows-clockwise text-sm"></i><span>Random Prompt</span>
+          </button>
+        </div>
+
+        <!-- Prompt Box -->
+        <div class="bg-slate-50 border border-slate-200 rounded-lg p-5 mb-6 min-h-[160px] flex flex-col justify-center" id="promptBox">
+          <p class="text-xs text-indigo-600 font-bold uppercase tracking-wider mb-2">Exam Question / Task:</p>
+          <div id="promptContenido" class="text-slate-800 font-medium leading-relaxed">Loading exam prompt...</div>
+        </div>
+
+        <!-- Controles de Audio (Speaking) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="md:col-span-2 bg-indigo-900 text-white rounded-xl p-5 flex flex-col justify-between shadow-sm">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-xs uppercase font-bold text-indigo-300 tracking-wider">Voice Recorder</span>
+              <span id="timerBadge" class="bg-indigo-800 text-amber-300 text-xs font-mono px-3 py-1 rounded-full border border-indigo-700">
+                Timer: <span id="timer">00:00</span>
+              </span>
+            </div>
+
+            <!-- VU Meter -->
+            <div class="bg-indigo-950/80 border border-indigo-700/60 rounded-lg p-2.5 mb-4">
+              <div class="flex justify-between items-center text-[11px] text-indigo-200 mb-1">
+                <span class="flex items-center space-x-1">
+                  <i class="ph ph-wave-sine text-amber-400 text-sm"></i><span>Mic Signal Level:</span>
+                </span>
+                <span id="lblNivelAudio" class="font-mono text-slate-400">0%</span>
+              </div>
+              <div class="w-full bg-indigo-900 rounded-full h-3 overflow-hidden p-0.5 border border-indigo-800 flex">
+                <div id="barNivelAudio" class="bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500 h-full rounded-full transition-all duration-75" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <button type="button" id="btnConectarMic" class="bg-amber-500 hover:bg-amber-600 text-indigo-950 font-bold text-xs px-4 py-2.5 rounded-lg shadow transition flex items-center space-x-1">
+                <i class="ph ph-plug text-base"></i><span id="lblConectarMic">Connect Microphone</span>
+              </button>
+              <button type="button" id="btnGrabar" disabled class="bg-slate-700 text-slate-400 font-bold text-sm px-5 py-2.5 rounded-lg shadow cursor-not-allowed transition flex items-center space-x-2">
+                <i class="ph ph-microphone text-lg"></i><span id="lblGrabar">Start Response</span>
+              </button>
+              <button type="button" id="btnEvaluar" disabled class="bg-slate-700 text-slate-400 font-bold text-sm px-5 py-2.5 rounded-lg shadow cursor-not-allowed transition flex items-center space-x-2">
+                <i class="ph ph-brain text-lg"></i><span>Evaluate Answer</span>
+              </button>
+            </div>
+            <p id="micStatus" class="text-xs text-indigo-200 italic">Click "Connect Microphone" to initialize audio capture.</p>
+          </div>
+
+          <!-- Status Monitor -->
+          <div class="bg-slate-100 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">Status</span>
+              <div class="flex items-baseline space-x-2">
+                <span id="scoreConfianza" class="text-2xl font-extrabold text-slate-800">OFF</span>
+                <span id="lblConfianzaEstado" class="text-xs text-slate-500">Disconnected</span>
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-2">Monitors speech stream in real-time.</p>
+          </div>
+        </div>
+
+        <!-- Transcripción Box -->
+        <div class="mb-6">
+          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Real-Time English Transcription (Editable):</label>
+          <textarea id="transcripcionBox" placeholder="Your spoken English response will appear here..." class="w-full bg-white border border-slate-300 rounded-lg p-4 text-sm text-slate-700 min-h-[110px] max-h-[160px] focus:ring-2 focus:ring-indigo-500 focus:outline-none leading-relaxed"></textarea>
+        </div>
+
+        <!-- Panel de Resultados de Evaluación -->
+        <div id="panelEvaluacion" class="hidden border-t border-slate-200 pt-6 mt-6">
+          <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center space-x-2">
+            <i class="ph ph-chart-line-up text-indigo-600"></i><span>FCE B2 Assessment Feedback</span>
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+            <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 text-center md:col-span-1 flex flex-col justify-center">
+              <span class="text-xs font-bold text-indigo-600 uppercase">Overall Score</span>
+              <span id="scoreGlobal" class="text-4xl font-extrabold text-indigo-900 my-1">0.0</span>
+              <span class="text-[10px] text-indigo-500">out of 10.0 points</span>
+            </div>
+            <div class="md:col-span-4 bg-white border border-slate-200 rounded-xl p-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+              <div class="p-2 bg-slate-50 rounded-lg"><span class="text-[11px] font-semibold text-slate-500 block">Grammar & Vocab</span><span id="scoreGramatica" class="text-lg font-bold text-slate-800">0.0 / 5</span></div>
+              <div class="p-2 bg-slate-50 rounded-lg"><span class="text-[11px] font-semibold text-slate-500 block">Discourse / Fluency</span><span id="scoreFluidez" class="text-lg font-bold text-slate-800">0.0 / 5</span></div>
+              <div class="p-2 bg-slate-50 rounded-lg"><span class="text-[11px] font-semibold text-slate-500 block">Pronunciation</span><span id="scorePronunciacion" class="text-lg font-bold text-slate-800">0.0 / 5</span></div>
+              <div class="p-2 bg-slate-50 rounded-lg"><span class="text-[11px] font-semibold text-slate-500 block">Interactive Comm.</span><span id="scoreInteraccion" class="text-lg font-bold text-slate-800">0.0 / 5</span></div>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse border border-slate-200 rounded-lg">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                  <th class="p-3">Category</th>
+                  <th class="p-3">Student Snippet</th>
+                  <th class="p-3">Deduction</th>
+                  <th class="p-3">Reason for Discount</th>
+                  <th class="p-3">How to Correct (B2 Rec)</th>
+                </tr>
+              </thead>
+              <tbody id="tablaErroresBody" class="divide-y divide-slate-200 text-slate-700"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-slate-800 text-slate-400 text-xs py-4 text-center mt-auto border-t border-slate-700">
+    <p>FCE B2 Practice Hub — Designed for Cambridge First Preparation</p>
+  </footer>
+
+  <!-- API de YouTube -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  
+  <script>
+    // ==========================================
+    // 1. DATA (EXAMS & SONGS)
+    // ==========================================
+    const examsData = {
+      1: { v: "lm8DXZi20Ww", k: "C,B,A,B,A,A,C,B|Business Administration,aeronautical engineering,Western Europe,Private Pilot’s Licence,across the Sahara,over the Alps,Zanussi,balloon manufacturing capital,the highest level,degree|D,E,A,F,C|A,B,A,B,C,C,C" },
+      2: { v: "IFZRbfPLKj4", k: "A,A,B,A,A,A,B,B|May,safety,helmet,seats,700/seven hundred,gloves,calm,silver,feather,T-shirt/t shirt|H,E,F,C,G|B,A,C,B,A,B,A" },
+      3: { v: "_qMwOgvQZQA", k: "B,B,C,B,C,A,B,B|geography,street markets/markets,magazine,horses,winter,motorbike/motor bike,fishing,March,Images,farming|E,H,B,G,D|B,A,C,A,B,B,C" },
+      4: { v: "d91O5LRMGyQ", k: "A,A,C,C,B,B,B,A|horse riding/horseriding,starter,green badges,35/thirty-five pounds,gym,sports bag,first team,notice board,party,discount|D,G,B,E,F|B,A,A,C,B,C,B" },
+      5: { v: "S2jS2rF-rKs", k: "B,C,A,B,C,B,B,C|teacher,3000/three thousand,travel writer,airports,passengers,science,controls,monitor,report,night|D,B,G,C,E|C,B,B,A,C,B,A" },
+      6: { v: "Ph0Mn9ofNao", k: "C,B,B,A,B,C,A,B|tropical birds,daylight/day light/light,motorbikes,emotional,170 km,spider,respect,landowners,dogs,lecture tours|C,D,A,F,E|B,A,A,C,C,B,C" },
+      7: { v: "XwW6SQM4bbU", k: "A,C,B,A,A,A,B,B|the television,a foreign language,difficult economic,bread machines,excitement,neighbours,household tasks,more leisure time,pleased,functions|G,F,A,E,C|B,C,A,B,A,C,B" },
+      8: { v: "5f7KFZuQ0Sk", k: "B,C,C,B,C,A,B,A|basketball,stress,middle-class/middle class,the right foods,frequent headaches/headaches,clubs,four/4,letting down,the freedom,free play/play|G,E,F,A,C|C,B,B,A,A,C,B" },
+      9: { v: "T-zy0nX7MRc", k: "A,B,B,B,C,C,C,A|festivals,jewellery/jewelry,nervous,to-do list/to do list,suppliers,satisfying,tourism,determined,backup plan,customer service|C,A,F,D,B|B,B,A,B,C,B,A" },
+      10: { v: "V5pv-Ka0EBk", k: "A,C,C,B,A,A,C,B|exhibition,camper van/camping van,morning,parachute jump,diamond ring,small island,fuel/gas/petrol,mosquito net,poem,tent|G,C,B,H,A|A,C,B,A,B,B,B" },
+      11: { v: "gzgQX6NLhKw", k: "B,A,C,B,C,A,B,B|conservation,the deer/deer,gate,projects,map,river,chemistry,height,dairy,local honey/honey|E,H,A,G,C|B,A,A,B,C,C,B" },
+      12: { v: "WItH-G57Ivc", k: "B,B,A,C,B,B,A,C|spice/spices,perfume,nail,terrible smell/smell,amount of smoke/smoke,machine,petrol,cotton,relaxation,colour/colours/color/colors|H,E,D,F,C|A,A,B,C,B,A,C" },
+      13: { v: "toW1pLaaBXs", k: "A,B,A,A,C,B,A,C|International Conservation,donkey,Medicine Garden,storms,bicycle/bike,growth,shelters,villages/ancient villages/old villages/the ancient villages/the old villages,terrace,sun cream/suncream|E,F,B,H,D|B,C,A,A,C,A,C" },
+      14: { v: "mxgXmQvKY9M", k: "A,C,A,B,B,B,A,B|trade,memorable,administrative,teaboy/tea boy,limit,festivals,practical,conferences,marketing,accountants|E,C,A,G,D|B,A,C,B,A,B,C" },
+      15: { v: "0EpGMHJvuGs", k: "C,C,B,A,C,B,A,B|mechanic,conference,sister,lamps,equipment,sportsman,magazine,landscapes,trucks,cycling|F,B,E,H,A|A,B,C,C,B,C,A" }
+    };
+    
+    const songsData = {
+      "song1": { v: "L0xJSAMwOjc", lyrics: "I walked through the [door] with you, the air was [cold].\nBut something 'bout it felt like [home] somehow." },
+      "song2": { v: "Fj1jO4oG1qA", lyrics: "Friday night you and your boys went out to [eat].\nThen they hung out, but you came home around [three].\nYes I [know] what you're doing, it's not right but it's [okay]." },
+      "song3": { v: "vKNcuTWzTVw", lyrics: "Rule number one, is that you gotta have [fun].\nBut baby when you're done, you gotta be the [first] to run.\nRule number two, just don't get [attached] to." }
+    };
+
+    const promptsFCE = {
+      1: ["<p class='text-base font-semibold'>1. Where are you from, and what do you like most about living there?</p>", "<p class='text-base font-semibold'>2. Do you prefer studying/working in the morning or in the evening? Why?</p>", "<p class='text-base font-semibold'>3. What kind of holidays do you enjoy the most and why?</p>"],
+      2: [`<div><p class='text-base font-bold text-slate-800 mb-3'>Compare the two photos: <span class='text-indigo-700'>Why might the people have chosen these different ways of exercising, and how do they feel?</span></p><div class='grid grid-cols-1 md:grid-cols-2 gap-4 mt-2'><div class='bg-white p-2 rounded-lg border border-slate-200 shadow-sm'><img src='https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80' class='w-full h-48 object-cover rounded-md mb-1'><p class='text-xs text-slate-500 font-medium text-center'>Photo A: Working out in an indoor gym</p></div><div class='bg-white p-2 rounded-lg border border-slate-200 shadow-sm'><img src='https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=600&q=80' class='w-full h-48 object-cover rounded-md mb-1'><p class='text-xs text-slate-500 font-medium text-center'>Photo B: Outdoor running in nature</p></div></div></div>`],
+      3: [`<div><p class='text-base font-bold text-slate-800 mb-3'>Central Question: <span class='text-indigo-700'>How could a city attract more tourists?</span></p><div class='bg-indigo-50 border border-indigo-200 rounded-xl p-4 text-center my-3'><span class='font-bold text-indigo-900 block mb-3 text-sm uppercase tracking-wide'>Mind Map Options to Discuss:</span><div class='grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-semibold text-indigo-800'><div class='bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm'>1. Building a new museum</div><div class='bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm'>2. Music festival</div><div class='bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm'>3. Better public transport</div><div class='bg-white p-2.5 sm:col-span-1 rounded-lg border border-indigo-100 shadow-sm'>4. Traditional food market</div><div class='bg-white p-2.5 sm:col-span-2 rounded-lg border border-indigo-100 shadow-sm'>5. Creating modern sports facilities</div></div></div></div>`],
+      4: ["<p class='text-base font-semibold'>1. Some people say that tourism destroys local cultures. Do you agree?</p>"]
+    };
+
+    // ==========================================
+    // 2. YOUTUBE LOGIC
+    // ==========================================
+    let playerExams, playerSongs;
+    let currentExam = 1, currentSong = "song1";
+
+    function onYouTubeIframeAPIReady() {
+      playerExams = new YT.Player('playerExams', { height: '250', width: '100%', videoId: examsData[currentExam].v, playerVars: { 'playsinline': 1 } });
+      playerSongs = new YT.Player('playerSongs', { height: '250', width: '100%', videoId: songsData[currentSong].v, playerVars: { 'playsinline': 1 } });
+    }
+    
+    function seekExam(sec) { if(playerExams && playerExams.getCurrentTime) playerExams.seekTo(playerExams.getCurrentTime() + sec, true); }
+    function playPauseExam() { if(playerExams && playerExams.getPlayerState) playerExams.getPlayerState() === YT.PlayerState.PLAYING ? playerExams.pauseVideo() : playerExams.playVideo(); }
+    function seekSong(sec) { if(playerSongs && playerSongs.getCurrentTime) playerSongs.seekTo(playerSongs.getCurrentTime() + sec, true); }
+    function playPauseSong() { if(playerSongs && playerSongs.getPlayerState) playerSongs.getPlayerState() === YT.PlayerState.PLAYING ? playerSongs.pauseVideo() : playerSongs.playVideo(); }
+
+    function loadExam() {
+      currentExam = document.getElementById('examSelect').value;
+      if(playerExams && playerExams.loadVideoById) playerExams.loadVideoById(examsData[currentExam].v);
+      renderMocks(); renderListening();
+    }
+    function loadSong() {
+      currentSong = document.getElementById('songSelect').value;
+      if(playerSongs && playerSongs.loadVideoById) playerSongs.loadVideoById(songsData[currentSong].v);
+      renderLyrics();
+    }
+
+    // ==========================================
+    // 3. GLOBAL NAVIGATION
+    // ==========================================
+    function switchGlobalTab(tabId) {
+      const tabs = ['mocks', 'listening', 'lyrics', 'speaking'];
+      tabs.forEach(t => {
+        const isTarget = t === tabId;
+        document.getElementById(`tab-${t}`).classList.toggle('hidden', !isTarget);
+        const btn = document.getElementById(`btn-${t}`);
+        if(isTarget) {
+          btn.classList.add('bg-white', 'text-indigo-700', 'border-t-2', 'border-indigo-700');
+          btn.classList.remove('bg-gray-100', 'text-gray-600', 'border-b-2', 'border-transparent', 'hover:bg-gray-200');
+        } else {
+          btn.classList.remove('bg-white', 'text-indigo-700', 'border-t-2', 'border-indigo-700');
+          btn.classList.add('bg-gray-100', 'text-gray-600', 'border-b-2', 'border-transparent', 'hover:bg-gray-200');
+        }
+      });
+
+      // Lógica de Reproductores
+      if(tabId === 'mocks' || tabId === 'listening') {
+        document.getElementById('exam-player-section').classList.remove('hidden');
+        document.getElementById('lyrics-player-section').classList.add('hidden');
+        if(playerSongs && playerSongs.pauseVideo) playerSongs.pauseVideo();
+      } else if (tabId === 'lyrics') {
+        document.getElementById('exam-player-section').classList.add('hidden');
+        document.getElementById('lyrics-player-section').classList.remove('hidden');
+        if(playerExams && playerExams.pauseVideo) playerExams.pauseVideo();
+      } else {
+        // En Speaking, ocultamos AMBOS reproductores y los pausamos
+        document.getElementById('exam-player-section').classList.add('hidden');
+        document.getElementById('lyrics-player-section').classList.add('hidden');
+        if(playerSongs && playerSongs.pauseVideo) playerSongs.pauseVideo();
+        if(playerExams && playerExams.pauseVideo) playerExams.pauseVideo();
+      }
+    }
+
+    // ==========================================
+    // 4. RENDERING & GRADING (TABS 1-3)
+    // ==========================================
+    function renderMocks() { 
+      const container = document.getElementById('mocks-container'); let html = '';
+      const renderDropdowns = (s, e, opts) => {
+        let b = '<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">';
+        for(let i=s; i<=e; i++) b += `<div class="flex items-center gap-2"><span class="font-bold w-6 text-right text-gray-700">${i}.</span><select id="q${i}" class="border p-1 rounded w-16 bg-gray-50"><option value="">-</option>${opts.map(o=>`<option value="${o}">${o}</option>`).join('')}</select></div>`;
+        return b + '</div>';
+      };
+      html += '<h3 class="font-bold text-lg mb-3 border-b pb-1 text-gray-700">Part 1</h3>' + renderDropdowns(1, 8, ['A','B','C']);
+      html += '<h3 class="font-bold text-lg mt-6 mb-3 border-b pb-1 text-gray-700">Part 3</h3>' + renderDropdowns(19, 23, ['A','B','C','D','E','F','G','H']);
+      html += '<h3 class="font-bold text-lg mt-6 mb-3 border-b pb-1 text-gray-700">Part 4</h3>' + renderDropdowns(24, 30, ['A','B','C']);
+      container.innerHTML = html;
+    }
+
+    function renderListening() {
+      const c = document.getElementById('listening-container'); let h = '';
+      for(let i=9; i<=18; i++) h += `<div class="flex flex-col sm:flex-row sm:items-center gap-3 py-1"><span class="font-bold w-6 text-right text-gray-700">${i}.</span><input type="text" id="q${i}" class="gap-input flex-1 px-2 py-1 text-center text-lg" placeholder="                 "><span id="res${i}" class="text-sm font-bold sm:w-64"></span></div>`;
+      c.innerHTML = h;
+    }
+
+    function renderLyrics() {
+      const c = document.getElementById('lyrics-container'); let count = 0;
+      c.innerHTML = songsData[currentSong].lyrics.replace(/\[([^\]]+)\]/g, (m, w) => { count++; return `<input type="text" id="lyric-q${count}" data-answer="${w}" class="gap-input w-32 px-1 text-center font-bold text-purple-700 mx-1"><span id="lyric-res${count}" class="hidden text-sm font-bold"></span>`; }).replace(/\n/g, '<br>');
+    }
+
+    const normalize = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const checkAns = (u, c) => u && c.split('/').map(normalize).includes(normalize(u));
+
+    function gradeMocks() {
+      const k = examsData[currentExam].k.split('|'); let s = 0;
+      const c = (q, v) => { const el = document.getElementById(`q${q}`); if(el.value===v){el.className='border p-1 rounded w-16 correct-select'; s++;}else el.className='border p-1 rounded w-16 incorrect-select'; };
+      for(let i=1; i<=8; i++) c(i, k[0].split(',')[i-1]);
+      for(let i=19; i<=23; i++) c(i, k[2].split(',')[i-19]);
+      for(let i=24; i<=30; i++) c(i, k[3].split(',')[i-24]);
+      document.getElementById('mocks-score').innerText = `Score: ${s} / 20`;
+    }
+
+    function gradeListening() {
+      const k = examsData[currentExam].k.split('|')[1].split(','); let s = 0;
+      for(let i=9; i<=18; i++) {
+        const el = document.getElementById(`q${i}`), res = document.getElementById(`res${i}`);
+        if(checkAns(el.value, k[i-9])) { el.className="gap-input correct-input flex-1 text-center text-lg"; res.innerHTML="✓"; res.className="text-green-600 text-sm font-bold sm:w-64"; s++; }
+        else { el.className="gap-input incorrect-input flex-1 text-center text-lg"; res.innerHTML="✗ "+k[i-9].replace(/\//g,' o '); res.className="text-red-600 text-sm font-bold sm:w-64 leading-tight"; }
+      }
+      document.getElementById('listening-score').innerText = `Score: ${s} / 10`;
+    }
+
+    function gradeLyrics() {
+      let s = 0; const ins = document.querySelectorAll('[id^="lyric-q"]');
+      ins.forEach((el, i) => {
+        const ans = el.getAttribute('data-answer'), res = document.getElementById(`lyric-res${i+1}`); res.classList.remove('hidden');
+        if(normalize(el.value)===normalize(ans)){ el.className="gap-input correct-input w-32 text-center font-bold mx-1"; res.innerHTML="✓"; res.className="text-green-600 text-sm font-bold"; s++; }
+        else { el.className="gap-input incorrect-input w-32 text-center font-bold mx-1"; res.innerHTML="✗ "+ans; res.className="text-red-600 text-sm font-bold"; }
+      });
+      document.getElementById('lyrics-score').innerText = `Score: ${s} / ${ins.length}`;
+    }
+
+    // ==========================================
+    // 5. SPEAKING SIMULATOR LOGIC
+    // ==========================================
+    let parteActual = 1, grabando = false, timerInterval = null, secs = 0, mediaStream = null, audioCtx = null, analyser = null, recognition = null, transAcum = "";
+
+    function initSpeakingApp() {
+      document.getElementById('btnNuevoPrompt').addEventListener('click', genPrompt);
+      document.getElementById('btnGrabar').addEventListener('click', toggleGrabar);
+      document.getElementById('btnEvaluar').addEventListener('click', evaluarSpeaking);
+      document.getElementById('btnConectarMic').addEventListener('click', conectarMic);
+      for(let i=1; i<=4; i++) document.getElementById(`spk-tab-${i}`).addEventListener('click', () => switchSpkTab(i));
+      genPrompt();
+    }
+
+    async function conectarMic() {
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser(); analyser.fftSize = 64;
+        audioCtx.createMediaStreamSource(mediaStream).connect(analyser);
+
+        if ('webkitSpeechRecognition' in window) {
+          recognition = new webkitSpeechRecognition(); recognition.continuous = true; recognition.interimResults = true; recognition.lang = 'en-US';
+          recognition.onresult = e => {
+            let intTxt = '';
+            for(let i=e.resultIndex; i<e.results.length; i++) e.results[i].isFinal ? transAcum += e.results[i][0].transcript.trim() + ' ' : intTxt += e.results[i][0].transcript;
+            document.getElementById('transcripcionBox').value = (transAcum + intTxt).trim();
+          };
+          recognition.onend = () => { if(grabando) try{recognition.start();}catch(e){} };
+        }
+        document.getElementById('micStatus').innerText = "Microphone connected! Click 'Start Response'.";
+        document.getElementById('lblConectarMic').innerText = "Mic Connected";
+        document.getElementById('btnConectarMic').className = "bg-emerald-600 text-white font-bold text-xs px-4 py-2.5 rounded-lg shadow flex items-center space-x-1";
+        document.getElementById('scoreConfianza').innerText = "ON"; document.getElementById('lblConfianzaEstado').innerText = "Active";
+        document.getElementById('btnGrabar').disabled = false; document.getElementById('btnGrabar').className = "bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm px-5 py-2.5 rounded-lg shadow transition flex items-center space-x-2";
+        iniciarVU();
+      } catch(err) { document.getElementById('micStatus').innerText = "Error: " + err.message; }
+    }
+
+    function iniciarVU() {
+      const data = new Uint8Array(analyser.frequencyBinCount);
+      function draw() {
+        if(!analyser) return; analyser.getByteFrequencyData(data);
+        let tot = 0; for(let i=0; i<data.length; i++) tot += data[i];
+        let pct = Math.min(100, Math.round(((tot/data.length)/128)*100));
+        document.getElementById('barNivelAudio').style.width = pct + '%';
+        document.getElementById('lblNivelAudio').innerText = pct + '%';
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+
+    function toggleGrabar() {
+      if(!grabando) {
+        transAcum = ""; document.getElementById('transcripcionBox').value = ""; secs = 0; grabando = true;
+        if(recognition) try{recognition.start();}catch(e){}
+        document.getElementById('lblGrabar').innerText = "Stop Response";
+        document.getElementById('btnGrabar').className = "bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm px-5 py-2.5 rounded-lg shadow transition flex items-center space-x-2";
+        document.getElementById('micStatus').innerText = "Recording... Speak clearly.";
+        timerInterval = setInterval(() => {
+          secs++; document.getElementById('timer').innerText = `${String(Math.floor(secs/60)).padStart(2,'0')}:${String(secs%60).padStart(2,'0')}`;
+        }, 1000);
+      } else {
+        grabando = false; clearInterval(timerInterval);
+        if(recognition) try{recognition.stop();}catch(e){}
+        document.getElementById('lblGrabar').innerText = "Start Response";
+        document.getElementById('btnGrabar').className = "bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm px-5 py-2.5 rounded-lg shadow transition flex items-center space-x-2";
+        document.getElementById('btnEvaluar').disabled = false;
+        document.getElementById('btnEvaluar').className = "bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm px-5 py-2.5 rounded-lg shadow transition flex items-center space-x-2";
+        document.getElementById('micStatus').innerText = "Done. Click 'Evaluate Answer'.";
+      }
+    }
+
+    function switchSpkTab(num) {
+      parteActual = num;
+      document.querySelectorAll('.spk-tab-btn').forEach(b => {
+        b.classList.remove('active','border-indigo-600','text-indigo-600','bg-white');
+        b.classList.add('border-transparent','text-slate-600');
+      });
+      const t = document.getElementById(`spk-tab-${num}`);
+      if(t) { t.classList.add('active','border-indigo-600','text-indigo-600','bg-white'); t.classList.remove('border-transparent','text-slate-600'); }
+      
+      const titles = ["Part 1: Interview", "Part 2: Long Turn", "Part 3: Collab Task", "Part 4: Discussion"];
+      const desc = ["Direct questions about personal life (~2 mins).", "Compare 2 photos and answer a question (1 min).", "Discuss a mind map with a partner (2-3 mins).", "Answer deeper questions about Part 3 topic (~3 mins)."];
+      document.getElementById('parteTitulo').innerText = titles[num-1];
+      document.getElementById('parteDescripcion').innerText = desc[num-1];
+      genPrompt();
+    }
+
+    function genPrompt() {
+      const l = promptsFCE[parteActual];
+      if(l && l.length) document.getElementById('promptContenido').innerHTML = l[Math.floor(Math.random()*l.length)];
+    }
+
+    function evaluarSpeaking() {
+      const txt = document.getElementById('transcripcionBox').value.trim(), words = txt.split(/\s+/).filter(w=>w.length>0);
+      const errs = [];
+      const render = (tot, g, f, p, i, er) => {
+        document.getElementById('panelEvaluacion').classList.remove('hidden');
+        document.getElementById('scoreGlobal').innerText = tot;
+        document.getElementById('scoreGramatica').innerText = g+" / 5"; document.getElementById('scoreFluidez').innerText = f+" / 5";
+        document.getElementById('scorePronunciacion').innerText = p+" / 5"; document.getElementById('scoreInteraccion').innerText = i+" / 5";
+        const body = document.getElementById('tablaErroresBody');
+        if(!er.length) body.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-emerald-600 font-semibold">Great response! Strong B2 English structures detected.</td></tr>`;
+        else body.innerHTML = er.map(e => `<tr class="hover:bg-slate-50"><td class="p-3 font-bold text-slate-800">${e.cat}</td><td class="p-3 text-rose-600 font-mono text-[11px]">${e.frag}</td><td class="p-3 font-bold text-rose-700">${e.pen}</td><td class="p-3">${e.raz}</td><td class="p-3 text-indigo-700 font-medium">${e.sug}</td></tr>`).join('');
+        document.getElementById('panelEvaluacion').scrollIntoView({behavior: 'smooth'});
+      };
+
+      if(words.length<10) return render("0.0", "0.0", "0.0", "0.0", "0.0", [{cat: "Insufficient Response", frag: txt||"None", pen: "-10.0 pts", raz: "Under 10 words. Cannot evaluate.", sug: "Speak in complete sentences for 30-60s."}]);
+      const span = txt.match(/\b(el|la|los|las|que|este|esta|bueno|porque|como|pero|por|para|con)\b/i);
+      if(span) return render("0.0", "0.0", "0.0", "0.0", "0.0", [{cat: "Spanish Detected", frag: span[0], pen: "-10.0 pts", raz: "Non-English vocabulary found.", sug: "The B2 exam is strictly in English."}]);
+
+      let g = 3.5, f = 3.0, p = 3.5, it = 3.5;
+      const conn = txt.match(/\b(however|moreover|furthermore|on the other hand|in my opinion|therefore|consequently)\b/gi);
+      if(!conn) { g -= 1.0; f -= 0.5; errs.push({cat: "Discourse Mgmt", frag: "No B2 linking words", pen: "-1.5 pts", raz: "Lacks formal connectors.", sug: "Use 'However', 'In my opinion'."}); } else { g = Math.min(5, g+1); }
+      if(words.length<25) { f -= 1.0; it -= 1.0; errs.push({cat: "Fluency & Length", frag: `${words.length} words`, pen: "-2.0 pts", raz: "Answer is too short.", sug: "Expand your ideas with examples."}); } else if(words.length>=45) { f=Math.min(5,f+1.5); it=Math.min(5,it+1); }
+      const fill = txt.match(/\b(like|um|uh|eh)\b/gi);
+      if(fill && fill.length>2) { p -= 0.5; f -= 0.5; errs.push({cat: "Hesitation", frag: fill.slice(0,3).join(', '), pen: "-1.0 pts", raz: "Frequent fillers affect flow.", sug: "Pause silently instead of using 'uh/um'."}); }
+      
+      const fix = n => Math.max(1, Math.min(5, n));
+      g = fix(g); f = fix(f); p = fix(p); it = fix(it);
+      render(((g+f+p+it)/20*10).toFixed(1), g.toFixed(1), f.toFixed(1), p.toFixed(1), it.toFixed(1), errs);
+    }
+
+    // ==========================================
+    // INITIALIZATION
+    // ==========================================
+    window.onload = function() {
+      const sel = document.getElementById('examSelect');
+      for(let i=1; i<=15; i++) { const o = document.createElement('option'); o.value = i; o.innerText = `Examen ${i}`; sel.appendChild(o); }
+      renderMocks(); renderListening(); renderLyrics(); initSpeakingApp();
+    };
+  </script>
+</body>
+</html>
