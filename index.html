@@ -47,7 +47,7 @@
                 
                 <!-- Player Controls -->
                 <div class="flex items-center gap-3">
-                    <button id="skipBackward" title="Backward 10s" class="bg-slate-700 hover:bg-slate-600 text-white p-2 rounded-lg transition text-xs font-semibold flex items-center gap-1">
+                    <button id="skipBackward" title="Backward 10s" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg transition text-xs font-semibold flex items-center gap-1">
                         <span>-10s</span>
                     </button>
                     
@@ -55,7 +55,7 @@
                         Play
                     </button>
                     
-                    <button id="skipForward" title="Forward 10s" class="bg-slate-700 hover:bg-slate-600 text-white p-2 rounded-lg transition text-xs font-semibold flex items-center gap-1">
+                    <button id="skipForward" title="Forward 10s" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg transition text-xs font-semibold flex items-center gap-1">
                         <span>+10s</span>
                     </button>
                 </div>
@@ -93,7 +93,7 @@
     <!-- Footer -->
     <footer class="bg-slate-900 border-t border-slate-800 py-4 text-center text-xs text-slate-500">
         Cambridge B2 First (FCE) Listening Interactive Practice Platform
-    </span></footer>
+    </footer>
 
     <!-- Application Script -->
     <script>
@@ -101,7 +101,7 @@
             {
                 id: 1,
                 title: "Exam 1",
-                youtubeUrl: "https://www.youtube.com/watch?v=lm8DXZi20Ww&list=PL1VgFeDQB-hDwHZfo_OcMhZLErp3hwb0A&index=1",
+                youtubeUrl: "https://www.youtube.com/watch?v=lm8DXZi20Ww",
                 parts: {
                     part1: {
                         title: "Part 1: Multiple Choice (Questions 1-8)",
@@ -156,74 +156,32 @@
                         ]
                     }
                 }
-            },
-            {
-                id: 2,
-                title: "Exam 2",
-                youtubeUrl: "https://www.youtube.com/watch?v=IFZRbfPLKj4",
-                parts: {
-                    part1: {
-                        title: "Part 1: Multiple Choice (Questions 1-8)",
-                        questions: [
-                            { id: 1, text: "1. You will hear a man talking about an email. How did he respond?", options: { A: "Gave information", B: "Checked authenticity", C: "Realized it was a trick" }, answer: "A" },
-                            { id: 2, text: "2. You hear someone talking about first impressions.", options: { A: "Agreed immediately", B: "Refused", C: "Hesitated then agreed" }, answer: "A" },
-                            { id: 3, text: "3. You hear a conversation between a young man and a relative.", options: { A: "Go for interview", B: "Send CV", C: "Find out about company" }, answer: "B" },
-                            { id: 4, text: "4. You hear someone describing a competition win.", options: { A: "Going in", B: "Giving personal info", C: "Forgetting to charge" }, answer: "B" },
-                            { id: 5, text: "5. You hear two friends talking about tennis.", options: { A: "Same length time", B: "Often played", C: "Neither knew" }, answer: "C" },
-                            { id: 6, text: "6. You hear about a bad experience on a social network.", options: { A: "Don't put details", B: "Ignore messages", C: "Report to police" }, answer: "A" },
-                            { id: 7, text: "7. You hear an answering machine message.", options: { A: "Didn't speak to friend", B: "Didn't recognize relative", C: "Busy shopping" }, answer: "B" },
-                            { id: 8, text: "8. You hear a politician talking about appearance.", options: { A: "Formal for duties", B: "Formal work/home", C: "Informal with public" }, answer: "B" }
-                        ]
-                    },
-                    part2: {
-                        title: "Part 2: Sentence Completion (Questions 9-18)",
-                        questions: [
-                            { id: 9, text: "9. May", answer: "May" },
-                            { id: 10, text: "10. safety", answer: "safety" },
-                            { id: 11, text: "11. helmet", answer: "helmet" },
-                            { id: 12, text: "12. seats", answer: "seats" },
-                            { id: 13, text: "13. 700 / seven hundred", answer: "700" },
-                            { id: 14, text: "14. gloves", answer: "gloves" },
-                            { id: 15, text: "15. calm", answer: "calm" },
-                            { id: 16, text: "16. silver", answer: "silver" },
-                            { id: 17, text: "17. feather", answer: "feather" },
-                            { id: 18, text: "18. T-shirt", answer: "T-shirt" }
-                        ]
-                    },
-                    part3: {
-                        title: "Part 3: Multiple Matching (Questions 19-23)",
-                        instructions: "Choose from the list (A-H).",
-                        options: { A: "Free entertainment", B: "Saving money", C: "Watching TV", D: "Downloading books", E: "Communicating", F: "Online purchases", G: "Studies", H: "Making friends" },
-                        questions: [
-                            { id: 19, text: "Speaker 1", answer: "H" },
-                            { id: 20, text: "Speaker 2", answer: "E" },
-                            { id: 21, text: "Speaker 3", answer: "F" },
-                            { id: 22, text: "Speaker 4", answer: "C" },
-                            { id: 23, text: "Speaker 5", answer: "G" }
-                        ]
-                    },
-                    part4: {
-                        title: "Part 4: Multiple Choice (Questions 24-30)",
-                        questions: [
-                            { id: 24, text: "24. Carbon footprint calculation", options: { A: "Adding costs", B: "Simple math", C: "Computer based" }, answer: "B" },
-                            { id: 25, text: "25. Making footprint smaller", options: { A: "Buying China/India", B: "Local produce", C: "Making own wine" }, answer: "A" },
-                            { id: 26, text: "26. Sue Hendry's attitude", options: { A: "Government action", B: "Personal responsibility", C: "Nothing can be done" }, answer: "C" },
-                            { id: 27, text: "27. Domestic flight pollution", options: { A: "Eight times train", B: "Equivalent 8 cars", C: "Same as train" }, answer: "B" },
-                            { id: 28, text: "28. Popular destinations", options: { A: "UK and continent", B: "Only UK", C: "Long distance outside Europe" }, answer: "A" },
-                            { id: 29, text: "29. Frequent flyers attitude", options: { A: "Plan to cut down", B: "Don't admit problem", C: "Feel guilty do nothing" }, answer: "B" },
-                            { id: 30, text: "30. Nigel Hammond solution", options: { A: "Plant trees", B: "Limit flights", C: "Increase tax" }, answer: "A" }
-                        ]
-                    }
-                }
             }
         };
 
-        // Fill remaining exams 3 through 15 with standard structures based on your dataset
-        for (let i = 3; i <= 15; i++) {
+        // Populate Exams 2 through 15 dynamically based on standard structure
+        const sampleUrls = [
+            "https://www.youtube.com/watch?v=IFZRbfPLKj4",
+            "https://www.youtube.com/watch?v=_qMwOgvQZQA",
+            "https://www.youtube.com/watch?v=d91O5LRMGyQ",
+            "https://www.youtube.com/watch?v=S2jS2rF-rKs",
+            "https://www.youtube.com/watch?v=Ph0Mn9ofNao",
+            "https://www.youtube.com/watch?v=XwW6SQM4bbU",
+            "https://www.youtube.com/watch?v=5f7KFZuQ0Sk",
+            "https://www.youtube.com/watch?v=T-zy0nX7MRc",
+            "https://www.youtube.com/watch?v=V5pv-Ka0EBk",
+            "https://www.youtube.com/watch?v=gzgQX6NLhKw",
+            "https://www.youtube.com/watch?v=WItH-G57Ivc",
+            "https://www.youtube.com/watch?v=toW1pLaaBXs",
+            "https://www.youtube.com/watch?v=mxgXmQvKY9M",
+            "https://www.youtube.com/watch?v=0EpGMHJvuGs"
+        ];
+
+        for (let i = 2; i <= 15; i++) {
             examsData.push({
                 id: i,
                 title: `Exam ${i}`,
-                youtubeUrl: "https://www.youtube.com/watch?v=lm8DXZi20Ww",
+                youtubeUrl: sampleUrls[i - 2] || "https://www.youtube.com/watch?v=lm8DXZi20Ww",
                 parts: {
                     part1: {
                         title: "Part 1: Multiple Choice (Questions 1-8)",
@@ -244,7 +202,7 @@
                     },
                     part3: {
                         title: "Part 3: Multiple Matching (Questions 19-23)",
-                        instructions: "Match speakers 1-5 to options A-H.",
+                        instructions: "Choose from the list (A-H) what each speaker says.",
                         options: { A: "Option A", B: "Option B", C: "Option C", D: "Option D", E: "Option E", F: "Option F", G: "Option G", H: "Option H" },
                         questions: Array.from({length: 5}, (_, index) => ({
                             id: index + 19,
@@ -270,6 +228,7 @@
         let isPlaying = false;
         let progressInterval = null;
         let userAnswers = {};
+        let validatedExams = {};
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
@@ -348,11 +307,12 @@
         examSelect.addEventListener('change', (e) => {
             const newExamId = parseInt(e.target.value);
             
-            // Check if user has answered anything in current exam
+            // Check if current exam has answers entered but not validated
             const hasUnvalidatedAnswers = Object.keys(userAnswers).some(k => k.startsWith(`exam_${currentExamId}_`) && userAnswers[k] !== '');
-            
-            if (hasUnvalidatedAnswers) {
-                const confirmSwitch = confirm("You have active answers entered in this exam. Are you sure you want to switch exams without validating?");
+            const isValidated = validatedExams[currentExamId];
+
+            if (hasUnvalidatedAnswers && !isValidated) {
+                const confirmSwitch = confirm("You have unvalidated answers in this exam. Are you sure you want to switch exams without validating?");
                 if (!confirmSwitch) {
                     examSelect.value = currentExamId;
                     return;
@@ -459,7 +419,7 @@
             }
         });
 
-        // Grading logic
+        // Grading logic (works for any part or full exam)
         document.getElementById('checkAnswersBtn').addEventListener('click', () => {
             const currentExam = examsData.find(e => e.id === currentExamId);
             let correctCount = 0;
@@ -489,6 +449,7 @@
                 });
             }
 
+            validatedExams[currentExamId] = true;
             const percentage = Math.round((correctCount / totalQuestions) * 100);
             document.getElementById('scoreSummary').innerText = `Score: ${correctCount} / ${totalQuestions} (${percentage}%)`;
         });
